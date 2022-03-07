@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="estacio_meteorologica.css">
+    </head>
+    <body>
+        <div id="capcalera">
+            <div id="ciutat">
+
+            </div>
+
+            <div id="temphumit">
+
+            </div>
+
+        </div>
+
+        <div id="estadistiques">
+            <div id="pressio">
+
+            </div>
+            <br>
+            <div id="sol">
+                <img id="sunset" src="imatges/sunset.png">
+                <img id="sunrise" src="imatges/sunrise.png">
+            </div>
+
+            <div id="vent">
+                <img id="direction" src="imatges/direction.png">
+                <img id="speed" src="imatges/wind.png">
+            </div>
+
+            <div id="descripcio">
+
+            </div>
+        </div>
+
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+        (function() {
+                $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat=41.6333&lon=0.9&appid=b33675d254b3894f1d636da10bb334b9&units=metric&mode=json")
+                    .done(function(data) {
+                        console.log(data);
+                        var ciutat = data.name;
+                        var temperatura = data.main.temp;
+                        var humitat = data.main.humidity;
+                        var pressio = data.main.pressure;
+                        var unix_sunset = data.sys.sunset;
+                        var unix_sunrise = data.sys.sunrise;
+                        var direccioVent = data.wind.deg;
+                        var velocitatVent = data.wind.speed;
+                        var descripcioTemps = data.weather.description;
+
+                        $('#temphumit').html("<h3>"+ temperatura + "C " + humitat + "%" +"</h3>");
+                        $('#sol').append('<p id="posta">&nbsp;&nbsp;' +  unixAData(unix_sunset) + '</p>');
+                        $('#sol').append('<p id="sortida">&nbsp;&nbsp;' +  unixAData(unix_sunrise) + '   </p>');
+
+
+                        function unixAData(temps_unix) {
+                            var date = new Date(temps_unix * 1000);
+                            var hours = date.getHours();
+                            var minutes = "0" + date.getMinutes();
+                            var seconds = "0" + date.getSeconds();
+                            var tempsFormatejat = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                            return tempsFormatejat;
+                        }
+
+                        console.log("sortida: "+unixAData(unix_sunrise));
+                        console.log("posta: "+unixAData(unix_sunset));
+                        
+
+                    $('#ciutat').html("<h1>"+ciutat+"</h1>");
+                    document.querySelector("#direction").style.transform = `rotate(${direccioVent-90}deg)`;
+
+
+                    
+                });
+            })();
+        </script>
+
+    </body>
+</html>
+
